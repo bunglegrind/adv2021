@@ -1,0 +1,17 @@
+{
+  "name": "adv2021",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "npx tape *.test.js"
+  },
+  "type": "module",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@jkuebart/parseq": "^20201109.0.0",
+    "ramda": "^0.27.1",
+    "tape": "^5.3.2"
+  }
+}
