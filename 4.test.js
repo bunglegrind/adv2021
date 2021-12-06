@@ -36,7 +36,7 @@ test("parse empty file", function (t) {
 
 test("parse single extraction", function (t) {
 	const {boards, extractions} = lib4.parse("1");
-	
+
 	t.plan(5);
 	t.ok(Array.isArray(boards));
 	t.equal(boards.length, 0);
@@ -48,7 +48,7 @@ test("parse single extraction", function (t) {
 
 test("parse three extractions", function (t) {
 	const {boards, extractions} = lib4.parse("5,34,78");
-	
+
 	t.plan(7);
 	t.ok(Array.isArray(boards));
 	t.equal(boards.length, 0);
@@ -75,7 +75,7 @@ test("parse extractions and a board", function (t) {
  6 10  3 18  5
  1 12 20 15 19`
 	);
-	
+
 	t.plan(6);
 	t.ok(Array.isArray(boards));
 	t.equal(boards.length, 1);
@@ -87,11 +87,21 @@ test("parse extractions and a board", function (t) {
 
 
 test("finale", function (t) {
-	t.plan(2);	
+	t.plan(2);
 
 	const {boards, extractions} = lib4.parse(input);
 	const game = lib4.game(boards, extractions);
 	t.ok(game.play());
 	const winner = game.getWinner();
 	t.equal(winner.sumOfUnmarked() * game.lastExtraction(), output);
+});
+
+test("second part", function (t) {
+	t.plan(2);
+
+	const {boards, extractions} = lib4.parse(input);
+	const game = lib4.game(boards, extractions);
+	t.ok(game.playUntil());
+	const winner = game.getWinner();
+	t.equal(winner.sumOfUnmarked() * game.lastExtraction(), 1924);
 });

@@ -73,53 +73,61 @@ function board(str) {
 	function sumOfUnmarked() {
 		return R.reduce((acc, x) => x[1] ? acc : acc + x[0], 0, R.unnest(table));
 	}
-	
-	return Object.freeze({get, hasWon, mark, sumOfUnmarked});
+
+	function toString() {
+		return JSON.stringify(table);
+	}
+
+	return Object.freeze({get, hasWon, mark, sumOfUnmarked, toString});
 }
 
 function game(boards, extractions) {
-	function play() {
-		return R.any(step, extractions);
-	}
-	
-	function findWinner(boards, extractions) {
-		R.any(step, extractions);
-
-		return (
-			extractions.length === 0 || boards.length === 0
-			? true
-			: findWinner(
-				R.without(winner, boards), R.drop(1 + lastExtraction(), extractions)
-			)
-		);
-	}
-
-	function playUntil() {
-		return findWinner(boards, extractions);
-	}
-
 	let lastNumberExtracted;
-	let winner; 
+	let winner;
 
-	function step(extraction) {
+	const step = R.curry(function (boards, extraction) {
 		lastNumberExtracted = extraction;
 		winner =  R.pipe(
 			R.forEach((board) => board.mark(extraction)),
-			R.find((board) => board.hasWon())
+			R.filter((board) => board.hasWon())
 		)(boards);
 
-		return Boolean(winner);
-	}
-
-	function getWinner() {
-		return winner;
-	}
+		return Boolean(winner.length);
+	});
 
 	function lastExtraction() {
 		return lastNumberExtracted;
 	}
 
-	return Object.freeze({play, playUntil, lastExtraction, getWinner});
+	function findWinner(boards, extractions, oneRound = false) {
+
+		R.any(step(boards), extractions);
+		return (
+			(extractions.length === 1 || boards.length === 1 || oneRound)
+			? true
+			: findWinner(
+				R.without(winner, boards),
+				R.drop(
+					1 + R.indexOf(
+						lastExtraction(),
+						extractions
+					),
+					extractions
+				)
+			)
+		);
+	}
+
+	function getWinner() {
+		return winner[0];
+	}
+
+	return Object.freeze({
+		play: () => findWinner(boards, extractions, true),
+		playUntil: () => findWinner(boards, extractions),
+		lastExtraction,
+		getWinner
+	});
 
 }
 
