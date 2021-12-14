@@ -14,10 +14,20 @@ const digits = [
 ];
 
 const wordToArray = R.split("");
-const getInput = R.pipe(R.split("|"), R.head);
-const getOutput = R.pipe(R.split("|"), R.last);
+const getInput = R.pipe(R.split(" | "), R.head);
+const getOutput = R.pipe(R.split(" | "), R.last);
+const segmentsOf = (n) => R.length(R.prop("wires", R.find(R.propEq("id", n))));
+const find = R.curry((n, array) => R.filter(R.eq(R.length, segmentsOf(n)), array));
+const findOne = R.filter(R.eq(R.length, segmentsOf2);
+const findFour = R.filter(R.eq(R.length, segmentsOf4);
+const findSeven = R.filter(R.eq(R.length, segmentsOf3);
+const findEight = R.filter(R.eq(R.length, segmentsOf(7))jj);
 
-function processInput() {
+
+function processInput(input) {
+	const mapping = [];
+	//first rule
+	
 
 }
 R.pipe(
