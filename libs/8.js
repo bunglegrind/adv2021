@@ -25,49 +25,71 @@ const findEight = R.find((x) => R.length(x) === segmentsOf(8));
 const findFiveSize = R.filter((x) => R.length(x) === 5);
 const findSixSize = R.filter((x) => R.length(x) === 6);
 
-const occurences = R.reduce((acc, x) => ({
-    ...acc,
-    [x]: R.pipe(R.defaultTo(0), R.inc)(acc[x])
-}), Object.create(null));
-
-const largestPair = R.reduce(([k0, v0], [k1, v1]) => {
-    const maxVal = R.max(v0, v1);
-    const keyOfLargest = maxVal > v0 ? k1 : k0;
-    return [keyOfLargest, maxVal];
-}, [null, -Infinity]);
-
-const mode = R.pipe(occurences, R.toPairs, largestPair, R.head);
-
-const findA = (words) => R.head(R.difference(findSeven(words), findOne(words)));
-function findC(words) {
-    const one = findOne(words);
+function find3569(words) {
     const distanceOneCouples = R.filter(
         ([one, two]) => distance(one, two) === 1,
         R.xprod(findFiveSize(words), findSixSize(words))
     );
-    const five = mode(R.map(R.find((x) => R.length(x) === segmentsOf(5)), distanceOneCouples));
+	const extract = (sz) => R.map(R.find((x) => R.length(x) === sz), distanceOneCouples);
+	const extractNumbers = (array) => (
+		R.equals(array[0], array[1])
+		? [array[0], array[2]]
+		: (
+			R.equals(array[0], array[2])
+			? [array[0], array[1]]
+			: [array[2], array[0]]
+		)
+	);
+	const [five, three] = extractNumbers(extract(segmentsOf(5)));
+	const [nine, six] = extractNumbers(extract(segmentsOf(9)));
 
-    return R.difference(one, five)[0];
+	return [three, five, six, nine];
+
 }
 
-function findF(words, mapping) {
-    const seven = findSeven(words);
-    return R.find((x) => x !== mapping.a && x !== mapping.c, seven);
+function find02(words, numbers) {
+	return [
+		R.unnest(R.reject(R.includes(R.__, numbers), findSixSize(words))), 
+		R.unnest(R.reject(R.includes(R.__, numbers), findFiveSize(words)))
+	];
 }
 
 const distance = (one, two) => R.length(R.difference(one, two)) + R.length(R.difference(two, one)) ;
 
 function process(input) {
+	const numbers = new Array(10).fill([]);
+	const sortedWordToArray = R.map(R.pipe(wordToArray, R.sort((one, two) => one.charCodeAt(0) - two.charCodeAt(0))));
     const words = R.pipe(
         getInput,
         getWords,
-        R.map(R.pipe(wordToArray, R.sort((one, two) => one.charCodeAt(0) - two.charCodeAt(0))))
+		sortedWordToArray 
     )(input);
-    const mapping = Object.create(null);
-    mapping.a = findA(words);
-    mapping.c = findC(words);
-    mapping.f = findF(words, mapping);
-    console.log(mapping);
+	numbers[1] = findOne(words);
+	numbers[4] = findFour(words);
+	numbers[7] = findSeven(words);
+	numbers[8] = findEight(words);
+	[numbers[3], numbers[5], numbers[6], numbers[9]] = find3569(words);
+	[numbers[0], numbers[2]] = find02(words, numbers);
+
+	const output = R.pipe(
+		getOutput,
+		getWords,
+		sortedWordToArray
+	)(input);
+	return R.pipe(
+		R.map(R.indexOf(R.__, numbers)),
+		R.join(""),
+		Number
+	)(output);
 }
 
-export default Object.freeze({process});
+function batch(input) {
+	return R.pipe(
+		R.split("\n"),
+		R.map(process),
+		R.sum
+	)(input);
+}
+
+
+export default Object.freeze({process, batch});

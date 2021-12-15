@@ -1,4 +1,5 @@
 import fs from "fs";
+import lib8 from "./libs/8.js";
 
 fs.readFile("./inputs/8.txt", "utf8", function (err, data) {
     if (err) {
@@ -17,5 +18,7 @@ fs.readFile("./inputs/8.txt", "utf8", function (err, data) {
     });
 
     console.log(count);
+
+	console.log(lib8.batch(data));
 
 });

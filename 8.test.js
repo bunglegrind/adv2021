@@ -13,7 +13,12 @@ egadfb cdbfeg cegd fecab cgb gbdefca cg fgcdab egfdb bfceg | gbdfcae bgc cg cgb
 gcafb gcf dcaebfg ecagb gf abcdeg gaef cafbge fdbac fegbdc | fgae cfgab fg bagce`;
 
 
-test("bd bdg | ", function (t) {
+test("first row", function (t) {
 	t.plan(1);
-    t.equal(lib8.process(input.split("\n")[0]), 2);
+    t.equal(lib8.process(input.split("\n")[0]), 8394);
+});
+
+test("final", function (t) {
+	t.plan(1);
+    t.equal(lib8.batch(input), 61229);
 });
