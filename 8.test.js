@@ -1,4 +1,5 @@
 import test from "tape";
+import lib8 from "./libs/8.js";
 
 const input = `be cfbegad cbdgef fgaecd cgeb fdcge agebfd fecdb fabcd edb | fdgacbe cefdb cefbgd gcbe
 edbfga begcd cbg gc gcadebf fbgde acbgfd abcde gfcbed gfec | fcgedb cgb dgebacf gc
@@ -13,5 +14,6 @@ gcafb gcf dcaebfg ecagb gf abcdeg gaef cafbge fdbac fegbdc | fgae cfgab fg bagce
 
 
 test("bd bdg | ", function (t) {
-	
+	t.plan(1);
+    t.equal(lib8.process(input.split("\n")[0]), 2);
 });
