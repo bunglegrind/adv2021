@@ -9,4 +9,9 @@ fs.readFile("./inputs/9.txt", "utf8", function (err, data) {
 
 	console.log(lib9.findMin(data).reduce((acc, x) => acc + x + 1, 0));
 
+	const basins = lib9.findBasins(data);
+	const basinSizes = basins.map((b) => b.length);
+	basinSizes.sort((a, b) => b - a);
+	console.log(basinSizes[0] * basinSizes[1] * basinSizes[2]); 
+
 });

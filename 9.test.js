@@ -35,3 +35,12 @@ test("first part", function (t) {
 	const min = lib9.findMin(input);
 	t.equal(min.reduce((acc, x) => acc + x + 1 , 0), output);
 });
+test("second part", function (t) {
+	t.plan(2);
+	const basins = lib9.findBasins(input);
+	console.log(basins);
+	t.equal(basins.length, 4);
+	const basinSizes = basins.map((b) => b.length);
+	basinSizes.sort((a, b) => b - a);
+	t.equal(basinSizes[0] * basinSizes[1] * basinSizes[2], 1134); 
+});
