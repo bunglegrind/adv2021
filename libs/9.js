@@ -1,3 +1,4 @@
+import assert from 'assert/strict';
 import * as R from "ramda";
 
 function parse(data) {
@@ -57,45 +58,33 @@ function split(obj, index, array) {
 }
 
 function calcBasins(basins) {
-	const getLengths = R.map(R.length);
-	const len = getLengths(basins);
-	const findIntorno = (p) => R.map(R.without([p], R.apply(extractIntorno)(p));
-	const mapAppend = R.ap(R.flip(R.append));
-// at every iteration it calculates the intorno of everything...we can
-// optimize
-//R.map(
-  //R.ap(
-   // R.flip(R.append),
-    //R.pipe(
-     // R.last,
-      //R.map(double)
-    //)
-  //)
-//, my);
+	const getBasinsSize = R.map(R.reduce((acc, i) => acc + R.length(i), 0));
+	const len = getBasinsSize(basins);
+
+	function expandBasin(basin) {
+		const newPoints = R.pipe(
+			R.last,
+			R.chain(R.apply(extractIntorno)),
+			R.difference(R.__, R.unnest(basin)),
+			R.uniq,
+			R.filter(([i, j]) => matrix[i][j] !== 9),
+		)(basin);
+
+		return newPoints.length > 0 ? R.append(newPoints, basin) : basin;
+	}
 	basins = R.map(
-		R.ap(
-			R.flip(R.append),
-			R.pipe(
-				findIntorno,
-				R.tap(console.log),
-				R.filter(([i, j]) => matrix[i][j] !== 9)
-			)
-		),
+		expandBasin,
 		basins
 	);
-	//basins = R.map(
-	//	R.pipe(
-	//		R.chain(R.apply(extractIntorno)),
-	//		R.uniq,
-	//		R.filter(([i, j]) => matrix[i][j] !== 9)
-	//	), basins);
-	return R.equals(len, getLengths(basins)) ? basins : calcBasins(basins);
+
+	return R.equals(len, getBasinsSize(basins)) ? basins : calcBasins(basins);
 }
 
 const findBasins = (input) => R.pipe(
 	findLowPoints,
 	R.map((x) => [[x]]),
-	calcBasins
+	calcBasins,
+	R.map(R.unnest)
 )(input);
 
 export default Object.freeze({findMin, findBasins});
