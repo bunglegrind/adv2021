@@ -1,4 +1,5 @@
 import test from "tape";
+import lib10 from "./libs/10.js";
 
 const input =
 `[({(<(())[]>[[{[]{<()<>>
@@ -13,3 +14,8 @@ const input =
 <{([{{}}[<[[[<>{}]]]>[]]`;
 
 const output = 26397;
+
+test("check a corrupted row", function (t) {
+	t.plan(1);
+	t.ok(lib10.isCorrupted("[(<}>)]"));
+});
