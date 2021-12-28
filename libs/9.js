@@ -59,20 +59,42 @@ function split(obj, index, array) {
 function calcBasins(basins) {
 	const getLengths = R.map(R.length);
 	const len = getLengths(basins);
+	const findIntorno = (p) => R.map(R.without([p], R.apply(extractIntorno)(p));
+	const mapAppend = R.ap(R.flip(R.append));
 // at every iteration it calculates the intorno of everything...we can
 // optimize
+//R.map(
+  //R.ap(
+   // R.flip(R.append),
+    //R.pipe(
+     // R.last,
+      //R.map(double)
+    //)
+  //)
+//, my);
 	basins = R.map(
-		R.pipe(
-			R.chain(R.apply(extractIntorno)),
-			R.uniq,
-			R.filter(([i, j]) => matrix[i][j] !== 9)
-		), basins);
+		R.ap(
+			R.flip(R.append),
+			R.pipe(
+				findIntorno,
+				R.tap(console.log),
+				R.filter(([i, j]) => matrix[i][j] !== 9)
+			)
+		),
+		basins
+	);
+	//basins = R.map(
+	//	R.pipe(
+	//		R.chain(R.apply(extractIntorno)),
+	//		R.uniq,
+	//		R.filter(([i, j]) => matrix[i][j] !== 9)
+	//	), basins);
 	return R.equals(len, getLengths(basins)) ? basins : calcBasins(basins);
 }
 
 const findBasins = (input) => R.pipe(
 	findLowPoints,
-	R.map((x) => [x]),
+	R.map((x) => [[x]]),
 	calcBasins
 )(input);
 
